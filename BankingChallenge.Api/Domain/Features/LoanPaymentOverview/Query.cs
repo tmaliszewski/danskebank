@@ -8,7 +8,7 @@ namespace BankingChallenge.Api.Domain.Features.LoanPaymentOverview
         {
             public decimal LoanAmount { get; set; }
 
-            public int DurationOfLoanInMonths { get; set; }
+            public int DurationOfLoanInYears { get; set; }
         }
     }
 }
