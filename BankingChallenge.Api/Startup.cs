@@ -1,3 +1,4 @@
+using BankingChallenge.Api.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +23,8 @@ namespace BankingChallenge.Api
         {
             services.AddMediatR(typeof(Startup));
             services.AddControllers();
+
+            services.Configure<DomainConfiguration>(Configuration.GetSection("Domain"));
 
             services.AddSwaggerGen(c =>
             {

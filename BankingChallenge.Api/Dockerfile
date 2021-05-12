@@ -10,6 +10,9 @@ WORKDIR /src
 COPY ["BankingChallenge.Api/BankingChallenge.Api.csproj", "BankingChallenge.Api/"]
 RUN dotnet restore "BankingChallenge.Api/BankingChallenge.Api.csproj"
 COPY . .
+
+RUN dotnet test BankingChallenge.Api.UnitTests
+
 WORKDIR "/src/BankingChallenge.Api"
 RUN dotnet build "BankingChallenge.Api.csproj" -c Release -o /app/build
 
