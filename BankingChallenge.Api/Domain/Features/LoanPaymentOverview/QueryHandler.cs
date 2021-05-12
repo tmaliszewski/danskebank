@@ -47,6 +47,11 @@ namespace BankingChallenge.Api.Domain.Features.LoanPaymentOverview
                 {
                     throw new ValidationException($"{nameof(Query.DurationOfLoanInYears)} must be greater than zero.");
                 }
+
+                if (query.LoanAmount < 0)
+                {
+                    throw new ValidationException($"{nameof(Query.LoanAmount)} cannot be less than zero.");
+                }
             }
 
             private decimal CalculateTotalInterest(decimal loanAmount, int durationOfLoanInMonths, decimal monthlyPayment)

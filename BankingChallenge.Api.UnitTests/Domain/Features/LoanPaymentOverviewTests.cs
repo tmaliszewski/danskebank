@@ -57,6 +57,30 @@ namespace BankingChallenge.Api.UnitTests.Domain.Features
                     TotalInterest =  115838.19m
                 }
             };
+
+            // modified Banking Challenge example - to check if administration fee from config will be chosen
+            yield return new object[]
+            {
+                new DomainConfiguration
+                {
+                    MaxAdministrationFee = 1000,
+                    AdministrationFeePercentage = 1,
+                    AnnualInterestRatePercentage = 5
+                },
+
+                new LoanPaymentOverview.Query
+                {
+                    LoanAmount = 500000,
+                    DurationOfLoanInYears = 10
+                },
+
+                new LoanPaymentOverview.Result
+                {
+                    MonthlyPayment =  5303.28m,
+                    TotalInterest =  136393.09m,
+                    AdministrationFee = 1000m
+                }
+            };
         }
 
         [Theory]
@@ -102,6 +126,34 @@ namespace BankingChallenge.Api.UnitTests.Domain.Features
             {
                 LoanAmount = 500000,
                 DurationOfLoanInYears = durationOfLoanInYears
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ValidationException>(() => handler.Handle(query, default));
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(int.MinValue)]
+        public async Task LoanPaymentOverviewFeature_Should_Throw_ValidationException_For_Invalid_LoanAmount(int loanAmount)
+        {
+            // Arrange
+            var domainConfiguration = new DomainConfiguration
+            {
+                MaxAdministrationFee = 10000,
+                AdministrationFeePercentage = 1,
+                AnnualInterestRatePercentage = 5
+            };
+
+            var domainConfigurationOptionsMock = new Mock<IOptions<DomainConfiguration>>();
+            domainConfigurationOptionsMock.Setup(m => m.Value).Returns(domainConfiguration);
+
+            var handler = new LoanPaymentOverview.QueryHandler(domainConfigurationOptionsMock.Object);
+
+            var query = new LoanPaymentOverview.Query
+            {
+                LoanAmount = loanAmount,
+                DurationOfLoanInYears = 10
             };
 
             // Act & Assert
